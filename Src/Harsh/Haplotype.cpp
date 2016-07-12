@@ -23,7 +23,7 @@ Haplotype::Haplotype(const vector<bool>& haplotype)
     haplotype_(haplotype) {}
 
 void Haplotype::copyInit(const RefPath& path) {
-  for (int i = 0; i < length_; i++) {
+  for (uint32_t i = 0; i < length_; i++) {
     haplotype_[i] = path[i];
   }
 }
@@ -173,7 +173,7 @@ bool Haplotype::operator[](const uint32_t index) const {
 }
 
 void Haplotype::randomInit() {
-  for (int i = 0; i < length_; i++) {
+  for (uint32_t i = 0; i < length_; i++) {
     if (rand() % 2 == 0) {
       haplotype_[i] = false;
     } else {

@@ -75,7 +75,7 @@ Read::Read(const string& readLine, const Parameter& param)
     startIndex_.push_back(index);
     index += readEnd.size() * 2;
 
-    for (int i = 0; i < readEnd.size(); i++) {
+    for (size_t i = 0; i < readEnd.size(); i++) {
       if (readEnd[i] == '-') {
         code_.push_back(false);
         code_.push_back(false);
@@ -90,7 +90,7 @@ Read::Read(const string& readLine, const Parameter& param)
       } else {
         printf("%s %s\n", readLine.c_str(), readEnd.c_str());
         sprintf(line, 
-                "[%s] - Inconsistent allele %c at position %d, given %c, should be %c or %c", 
+                "[%s] - Inconsistent allele %c at position %ld, given %c, should be %c or %c",
                 readLine.c_str(),
                 readEnd[i],
                 position + 1 + i,
@@ -212,7 +212,7 @@ uint32_t Read::size() const {
 int Read::validateReadEnd(string& readEnd) const {
   /* remove beginning missing data */
   int beginDumpSize = 0;
-  for (int i = 0; i < readEnd.size(); ++i) {
+  for (size_t i = 0; i < readEnd.size(); ++i) {
     if (readEnd[i] != '-') {
       break;
     } else {
@@ -263,7 +263,7 @@ void Read::print() const {
   }
     
   printf("Read\t");
-  for (int i = 0; i < all.size(); i++) {
+  for (size_t i = 0; i < all.size(); i++) {
     if (getFlip() && all[i] != '-') {
       printf("(%c)\t", all[i]);
     } else {

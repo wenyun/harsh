@@ -65,8 +65,7 @@ private:
 
   void backwardSampling(RefPath& path,
                         const vector<double>& v,
-                        const vector<double>& vsum,
-                        const Haplotype& haplotype,
+                        const vector<double>& vsum,                        
                         const Parameter& param) const;
 
   void plusEmission(vector<double>& v,

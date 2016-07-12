@@ -296,7 +296,7 @@ int Parameter::validateLine(const string& line) const {
 void Parameter::renewTran(uint32_t nHap) {
 
   nHap_ = nHap;
-  for (int i = 1; i < nSnp_; i++) {
+  for (size_t i = 1; i < nSnp_; i++) {
     double rho;
     if (gmap_[i] - gmap_[i - 1] < 1e-12) {
       rho = 4 * tranNe_ * 1e-12;

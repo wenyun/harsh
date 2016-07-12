@@ -52,52 +52,6 @@ void printVersionInformation() {
   );
 }
 
-int main(int argc, char** argv) {
-
-  printVersionInformation();
-  srand(time(NULL));
-
-  Parameter param;
-  parseInputParameter(argc, argv, param);
-  param.initFromMapFile();
-
-  vector<Read> read;
-  readSeqFile(param.getSeqFile(), read, param);
-
-  Reference reference;
-  if (param.getHasRef()) {
-    reference.initFromFile(param.getRefFile(), param);
-    param.setSampleSize(min(reference.getHapNo(), param.getSampleSize()));
-    param.renewTran(reference.getHapNo());
-  }
-  
-  Haplotype haplotype1(param.getNSnp());
-  Haplotype haplotype2(param.getNSnp());
-  
-  if (param.getHasRef()) {
-    /* haplotype inference */
-    printInputInformation(read, reference, param);
-    harshMessage("Haplotype inference with reference start...", 1, param);
-    inferenceGibbs(haplotype1, haplotype2, read, reference, param);
-    outputInference(haplotype1, haplotype2, param);
-  } else {
-    /* haplotype assembly */
-    printInputInformation(read, param);
-    harshMessage("Haplotype assembly start...", 1, param);
-    assemblyGibbs(haplotype1, read, param);
-    printf("start output\n");
-    outputAssembly(haplotype1, param);
-  }
-
-  printf("sampling time (read %llu %f, haplotype %llu %f, reference %llu %f)\n",
-         Read::getCount(),
-         ((double) Read::getTime()) / CLOCKS_PER_SEC,
-         Haplotype::getCount(),
-         ((double) Haplotype::getTime()) / CLOCKS_PER_SEC,
-         Reference::getCount(),
-         ((double) Reference::getTime()) / CLOCKS_PER_SEC);
-}
-
 void printInputInformation(const vector<Read>& read,
                            const Reference& reference,
                            const Parameter& param) {
@@ -128,7 +82,7 @@ void printInputInformation(const vector<Read>& read,
   harshMessage(line, 0, param);
 
   int64_t nBit = 0;
-  for (int i = 0; i < read.size(); i++) {
+  for (size_t i = 0; i < read.size(); i++) {
     nBit += read[i].size();
   }
 
@@ -173,7 +127,7 @@ void printInputInformation(const vector<Read>& read,
   harshMessage(line, 0, param);
 
   int64_t nBit = 0;
-  for (int i = 0; i < read.size(); i++) {
+  for (size_t i = 0; i < read.size(); i++) {
     nBit += read[i].size();
   }
 
@@ -259,7 +213,7 @@ void assemblyGibbs(Haplotype& haplotype,
                    const Parameter& param) {
 
   /* initialize read count */
-  for (int i = 0; i < read.size(); i++) {
+  for (size_t i = 0; i < read.size(); i++) {
     haplotype.assignRead(read[i], Haplotype::AllWithFlipRev);
   }
  
@@ -268,7 +222,7 @@ void assemblyGibbs(Haplotype& haplotype,
   /* sampling iteration */
   for (int i = 0; i < param.getMaxIter(); i++) {
     haplotype.sample(param);
-    for (int j = 0; j < read.size(); j++) {
+    for (size_t j = 0; j < read.size(); j++) {
       bool isChanged = read[j].sampleFlip(haplotype, param);
       if (isChanged) {
         haplotype.flipRead(read[j], Haplotype::AllWithFlipRev);
@@ -315,7 +269,7 @@ void inferenceGibbs(Haplotype& haplotype1,
     /* make the read count likelihood */
     vector<pair<uint16_t, uint16_t> > count(reference.getSnpNo(), 
                                             make_pair<uint16_t, uint16_t>(0, 0));
-    for (int i = 0; i < read.size(); i++) {
+    for (size_t i = 0; i < read.size(); i++) {
       for (Read::Iterator iter = read[i].begin(); 
            iter != read[i].end(); 
            ++iter) {
@@ -339,7 +293,7 @@ void inferenceGibbs(Haplotype& haplotype1,
     haplotype2.copyInit(maxPath2);
     
     /* sample read assignment */
-    for (int i = 0; i < read.size(); i++) {
+    for (size_t i = 0; i < read.size(); i++) {
       read[i].sampleFlip(haplotype1, haplotype2, param);
     }
   }
@@ -350,7 +304,7 @@ void inferenceGibbs(Haplotype& haplotype1,
   harshMessage(line, 2, param);  
 
   /* initialize haplotype read counts */
-  for (int i = 0; i < read.size(); i++) {
+  for (size_t i = 0; i < read.size(); i++) {
     if (!read[i].getFlip()) {
       haplotype1.assignRead(read[i], Haplotype::NonFlipOnly);
     } else {
@@ -369,10 +323,10 @@ void inferenceGibbs(Haplotype& haplotype1,
     reference.samplePath(path1, haplotype1, param);
     reference.samplePath(path2, haplotype2, param);
 
-    for (int k = 0; k < param.getSubIter(); k++) {
+    for (size_t k = 0; k < param.getSubIter(); k++) {
       haplotype1.sample(path1, param);
       haplotype2.sample(path2, param);
-      for (int j = 0; j < read.size(); j++) {
+      for (size_t j = 0; j < read.size(); j++) {
         bool isChanged = read[j].sampleFlip(haplotype1, haplotype2, param);
         if (isChanged) {
           if (read[j].getFlip()) {
@@ -419,7 +373,7 @@ double inferenceLikelihood(Haplotype& haplotype1,
   uint32_t mismatchBoth = 0;
   uint32_t matchEither = 0;
   uint32_t matchBoth = 0;
-  for (int i = 0; i < read.size(); i++) {
+  for (size_t i = 0; i < read.size(); i++) {
     uint32_t match1 = read[i].countMatch(haplotype1);
     uint32_t match2 = read[i].countMatch(haplotype2);
     uint32_t mismatch1 = read[i].size() - match1;

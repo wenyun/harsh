@@ -18,40 +18,6 @@ using std::make_pair;
 using std::min;
 using std::max;
 
-extern char line[1000];
-
-void exitWithHelp() {
-  printf(
-  "Usage: harsh [options]\n"
-  "options: \n"
-  "--sfile seq_file : sequencing read file\n"
-  "--rfile ref_file : reference haplotype file\n"
-  "--mfile map_file : SNP map file\n"
-  "--output out_file : output haplotype file\n"
-  "-n iteration: number of sampling iterations (default 1e3)\n"
-  "-u mu : smoothing parameter for sampling (default 1)\n"
-  "-e epsilon : sequencing error rate (default 0.01)\n"
-  "-w omega : mismatch error rate between reference and donar haplotype (default 2e-3)\n"
-  "-r rho : population constant for computing transitions (default 1e-3)\n"
-  "-v verbose : verbose level (default 1)\n"
-  );
-  exit(1);
-}
-
-void printVersionInformation() {
-  printf(
-  "@----------------------------------------------------------@\n"
-  "|         HARSH!       |      v0.21      |    8/Nov/201 3  |\n"
-  "|----------------------------------------------------------|\n"
-  "|                    (C) 2013 Wen-Yun Yang                 |\n"
-  "|----------------------------------------------------------|\n"
-  "|  For documentation, citation & bug-report instructions:  |\n"
-  "|            http://genetics.cs.ucla.edu/harsh             |\n"
-  "@----------------------------------------------------------@\n"
-  "\n"
-  );
-}
-
 int main(int argc, char** argv) {
 
   printVersionInformation();

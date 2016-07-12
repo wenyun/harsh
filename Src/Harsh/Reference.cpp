@@ -64,7 +64,7 @@ void Reference::initFromFile(const char* refFile, const Parameter& param) {
         sprintf(line, "Reference file wrong format\n");
         harshErrorExit(line);
       }
-      for (int i = 0; i < refLine.size(); i++) {
+      for (size_t i = 0; i < refLine.size(); i++) {
         if (refLine[i] == param.getMinorAllele(lc)) {
           hap_.push_back(true);
         } else if (refLine[i] == param.getMajorAllele(lc)) {
@@ -96,7 +96,7 @@ void Reference::samplePath(RefPath& path,
   vector<double> v(getHapNo() * getSnpNo());
   vector<double> vsum(getSnpNo());
   forward(v, vsum, haplotype, param);
-  backwardSampling(path, v, vsum, haplotype, param);
+  backwardSampling(path, v, vsum, param);
 
   clock_t end = clock();
   time_ += end - begin;
@@ -216,7 +216,6 @@ void Reference::plusEmission(vector<double>& v,
                              const Parameter& param) const {
 
   int hapNo = param.getSampleSize();
-  int snpNo = getSnpNo();
   int hapNo2 = hapNo * hapNo;
 
   int total = count.first + count.second;
@@ -282,11 +281,11 @@ void Reference::forward(vector<double>& v,
                         const Haplotype& haplotype,
                         const Parameter& param) const {
   
-  for (int i = 0; i < v.size(); i++) {
+  for (size_t i = 0; i < v.size(); i++) {
     v[i] = 0.0;
   }
   
-  for (int i = 0; i < vsum.size(); i++) {
+  for (size_t i = 0; i < vsum.size(); i++) {
     vsum[i] = 0.0;
   }
 
@@ -322,7 +321,6 @@ void Reference::forward(vector<double>& v,
 void Reference::backwardSampling(RefPath& path,
                                  const vector<double>& v,
                                  const vector<double>& vsum,
-                                 const Haplotype& haplotype,
                                  const Parameter& param) const {
 
   vector<double> prob(getHapNo());
@@ -354,8 +352,8 @@ void Reference::backwardSampling(RefPath& path,
 
 int Reference::validateLine(string& line) const {
   
-  int nBit = 0;
-  for (int i = 0; i < line.size(); i++) {
+  size_t nBit = 0;
+  for (size_t i = 0; i < line.size(); i++) {
     if (line[i] != '-' && 
         line[i] != ' ' && 
         line[i] != '\t' && 
@@ -368,7 +366,7 @@ int Reference::validateLine(string& line) const {
   if (nBit != line.size()) {
     string clean(nBit, ' ');
     int j = 0;
-    for (int i = 0; i < line.size(); i++) {
+    for (size_t i = 0; i < line.size(); i++) {
       if (line[i] != '-' && 
           line[i] != ' ' && 
           line[i] != '\t' && 

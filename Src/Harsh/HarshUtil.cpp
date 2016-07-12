@@ -33,7 +33,7 @@ int mnrnd(const vector<double>& prob) {
   while (index < 0) {
     double r = rand() / (double) RAND_MAX;
     double sum = 0.0;
-    for (int i = 0; i < prob.size(); i++) {
+    for (size_t i = 0; i < prob.size(); i++) {
       sum += prob[i];
       if (sum >= r) {
         index = i + 1;
